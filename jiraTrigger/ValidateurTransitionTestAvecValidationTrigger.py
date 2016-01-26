@@ -76,12 +76,12 @@ def checkRequiredFields():
         return False
     testrun_id = issue.getCustomFieldValue(cfm.getCustomFieldObjectByName("ID-Campagne"))
     workitem_id = issue.getCustomFieldValue(cfm.getCustomFieldObjectByName("ID-cas-de-test"))
-    if repr(testrun_id) == 'None':
+    if repr(testrun_id) == 'None' or not bool(testrun_id.lstrip()):
         log.error('[' + defect_id + ']' + E1)
         result = False
         invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-Campagne").getIdAsLong())] = u'Le champ ID-Campagne devrait être rempli'
         sendMetrics(E1)
-    elif repr(workitem_id) == 'None':
+    elif repr(workitem_id) == 'None' or not bool(workitem_id.lstrip()):
         log.error('[' + defect_id + ']' + E2)
         result = False
         invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-cas-de-test").getIdAsLong())] = u'Le champ ID-cas-de-test devrait être rempli'
