@@ -5,8 +5,7 @@ Created on 18 nov. 2015
 '''
 
 ##CONSTANTES
-#ip_api_polarion = "cd.pagesjaunes.fr"
-ip_api_polarion = "192.168.160.232"
+ip_dashboard = "cd.pagesjaunes.fr"
 port_api_polarion = "8080"
 path_workitem = "/workitems/"
 path_testruns = "/testruns/"
@@ -15,11 +14,11 @@ projects = ['front', 'orc', 'worc', 'api']
 criticiteMap = [{"polarion" : "critical", "jira" :"Bloquant"}, {"polarion" : "major", "jira" : "Majeur"}, {"polarion" : "minor", "jira" :"error"}, {"polarion" : "trivial", "jira" : "error"}]
 ####################################
 ##ERREURS
-E1 = "Le champ ID-Campagne devrait être remplit. "
-E2 = "Le champ ID-cas-de-test devrait être remplit. "
+E1 = "Le champ ID-Campagne devrait être rempli. "
+E2 = "Le champ ID-cas-de-test devrait être rempli. "
 E3 = "Pas de workitem trouvé dans le repository de Polarion. "
 E4 = "Incohérence de criticité entre le test dans Polarion et JIRA. "
-E5 = "Pas de testrun trouvé dans le repository du projet  Polarion. "
+E5 = "Pas de testrun trouvé dans le repository du projet Polarion. "
 E6 = "Pas de workitem trouvé dans le testrun. "
 E7 = "Le champ \"Projet(s) Polarion\" ne doit contenir qu\'un seul projet. "
 E8 = "Problème avec l\'api-polarion. Code : "
@@ -80,12 +79,12 @@ def checkRequiredFields():
     if repr(testrun_id) == 'None':
         log.error('[' + defect_id + ']' + E1)
         result = False
-        invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-Campagne").getIdAsLong())] = u'Le champ ID-Campagne devrait être remplis'
+        invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-Campagne").getIdAsLong())] = u'Le champ ID-Campagne devrait être rempli'
         sendMetrics(E1)
     elif repr(workitem_id) == 'None':
         log.error('[' + defect_id + ']' + E2)
         result = False
-        invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-cas-de-test").getIdAsLong())] = u'Le champ ID-cas-de-test devrait être remplis'
+        invalid_fields['customfield_' + str(cfm.getCustomFieldObjectByName("ID-cas-de-test").getIdAsLong())] = u'Le champ ID-cas-de-test devrait être rempli'
         sendMetrics(E2)
     else:
         testrun_id = testrun_id.strip()
@@ -101,7 +100,7 @@ def getWorkitem(P_id_workitem):
     global WorkitemCreationDate
     global result
     try:
-        r = urllib2.urlopen("http://" + ip_api_polarion + "/api-polarion-1/" + path_workitem + P_id_workitem)
+        r = urllib2.urlopen("http://" + ip_dashboard + "/api-polarion-1/" + path_workitem + P_id_workitem)
         workitem = r.read()
         WorkitemCreationDate = getWorkitemCreationDate(workitem)
         WorkitemUpdatedDate = getWorkitemUpdatedDate(workitem)
@@ -147,7 +146,7 @@ def getTestRun(P_id_testruns, P_project_id):
     global project_id
     global testrun
     try:
-        r = urllib2.urlopen("http://" + ip_api_polarion + "/api-polarion-1/" + path_testruns + "?id=" + P_id_testruns + "&project=" + P_project_id)
+        r = urllib2.urlopen("http://" + ip_dashboard + "/api-polarion-1/" + path_testruns + "?id=" + P_id_testruns + "&project=" + P_project_id)
         testrun = r.read()
     except urllib2.HTTPError, httpError:
         print 'HTTPError'
@@ -231,8 +230,7 @@ def sendMetrics(P_error):
     headers['Content-Type'] = "application/json"
     headers['Accept'] = "application/json"
     try:
-        conn = httplib.HTTPConnection('192.168.160.18',8082)
-        #conn = httplib.HTTPConnection('cd.pagesjaunes.fr')
+        conn = httplib.HTTPConnection(ip_dashboard)
         conn.request('PUT', '/dashboard-cd/api/measure/defect', params, headers)
         response = conn.getresponse()
         log.info('[' + defect_id + '] Envoi des indicateurs : ' + response.reason )
