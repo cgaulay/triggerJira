@@ -9,6 +9,7 @@ provenance = issue.getCustomFieldValue(cfm.getCustomFieldObjectByName("Provenanc
 criticite = issue.getPriorityObject().getName()
 project_id = issue.getProjectObject().getName()
 dateCreationJira = issue.getCreated().toString()
+issueType = issue.getIssueTypeObject().getName()
 
 def sendMetrics(P_error):
     now = datetime.datetime.today()
