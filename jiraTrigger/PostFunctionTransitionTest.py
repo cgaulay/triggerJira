@@ -31,12 +31,13 @@ def sendMetrics(P_error):
     headers['Accept'] = "application/json"
 
     try:
-        conn = httplib.HTTPConnection('192.168.160.18',8082)
-        #conn = httplib.HTTPConnection('cd.pagesjaunes.fr')
+        conn = httplib.HTTPConnection('cd.pagesjaunes.fr')
         conn.request('PUT', '/dashboard-cd/api/measure/defect', params, headers)
         response = conn.getresponse()
         log.info('Envoi des indicateurs bypass Trigger : ' + response.reason)
     except:
         log.warn('Impossible d\'envoyer les métriques')
         pass
-sendMetrics("")
+
+if repr(provenance) !='None' and (criticite == 'Bloquant' or criticite == 'Majeur') and issueType == "Anomalie":
+    sendMetrics("")
