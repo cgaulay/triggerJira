@@ -109,11 +109,11 @@ def getWorkitem(P_id_workitem):
         try:
             data = json.loads(httpError.read())
             error = data["status"]["status_content"][0]["message"]
-            throwError(error, "ID-cas-de-test", E8 + str(error), P_id_workitem)
+            throwError(error, "ID-cas-de-test", E3, P_id_workitem)
         except:
             log.error('[' + defect_id + ']' + E8 + str(httpError))
             description = description + E8 + str(httpError)
-            sendMetrics(E8 + str(httpError))
+            sendMetrics(str(httpError))
             result = False
     except urllib2.URLError, urlError:
         print 'URLError'
@@ -152,10 +152,10 @@ def getTestRun(P_id_testruns, P_project_id):
         print 'HTTPError'
         data = json.loads(httpError.read())
         error = data["status"]["status_content"][0]["message"]
-        throwError(error, "ID-Campagne", E5 + str(error), P_id_testruns)
+        throwError(error, "ID-Campagne", E5, P_id_testruns)
     except urllib2.URLError, urlError:
         print 'URLError'
-        throwError(str(urlError.reason), "ID-Campagne", E5 + str(urlError.reason), P_id_testruns)
+        throwError(str(urlError.reason), "ID-Campagne", E8 + str(urlError.reason), P_id_testruns)
     except Exception, e:
         print 'Exception'
         throwError(str(e), "ID-Campagne", E5, P_id_testruns)
